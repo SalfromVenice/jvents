@@ -320,6 +320,7 @@ DEPENDENCIES
   brakeman
   debug
   kamal
+  nokogiri (~> 1.18)
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 8.0.2)
