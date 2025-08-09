@@ -4,8 +4,8 @@ class Event < ApplicationRecord
     validates :address, presence: true
     validates :image_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), allow_blank: true }
 
-    scope :upcoming, -> { where("start_time >= ?", Time.current).order(:start_time) }
-    scope :expired, ->  { where("end_time < ?", Time.current) }
+    scope :ongoing_or_upcoming, -> { where("end_time >= ?", Date.today).order(:start_time) }
+    scope :expired, ->  { where("end_time < ?", Date.today) }
 
     # formula di Haversine (o una sua variante),
     # calcola la distanza tra due punti sulla superficie della Terra,

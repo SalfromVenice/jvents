@@ -5,9 +5,9 @@ class Api::V1::EventsController < ApplicationController
         radius = params[:radius]&.to_f || 10
 
         events = if lat && lng
-            Event.nearby(lat, lng, radius).upcoming
+            Event.nearby(lat, lng, radius).ongoing_or_upcoming
         else
-            Event.upcoming
+            Event.ongoing_or_upcoming
         end
         render json: events
     end
