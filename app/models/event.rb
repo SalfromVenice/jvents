@@ -1,7 +1,7 @@
 class Event < ApplicationRecord
     validates :title, presence: true
     validates :start_time, presence: true
-    validates :url, presence: true, uniqueness: true
+    validates :address, presence: true
     validates :image_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), allow_blank: true }
 
     scope :upcoming, -> { where("start_time >= ?", Time.current).order(:start_time) }

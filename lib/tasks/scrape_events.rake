@@ -59,15 +59,15 @@ namespace :scrape do
                     image_src = event_div.at_css("img.event-item__image")&.[]("src")
                     image_url = image_src ? URI.join(base_url, image_src).to_s : nil
 
-                    puts "Titolo: #{title}"
-                    puts "start date: #{start_date}"
-                    puts "end date: #{end_date}"
-                    puts "Image: #{image_url}"
-                    puts "Cost: #{cost}"
-                    puts "Venue: #{venue}"
-                    puts "Address: #{address}"
-                    puts "Coordinates: #{lat} & #{lng}"
-                    puts "Sito: #{event_url}"
+                    # puts "Titolo: #{title}"
+                    # puts "start date: #{start_date}"
+                    # puts "end date: #{end_date}"
+                    # puts "Image: #{image_url}"
+                    # puts "Cost: #{cost}"
+                    # puts "Venue: #{venue}"
+                    # puts "Address: #{address}"
+                    # puts "Coordinates: #{lat} & #{lng}"
+                    # puts "Sito: #{event_url}"
 
                     # Event.create(
                     #     title: title,
@@ -81,6 +81,16 @@ namespace :scrape do
                     #     longitude: lng,
                     #     url: event_url
                     # )
+
+                    Event.find_or_create_by(title: title, start_time: start_date, address: address) do |event|
+                        event.end_time = end_date
+                        event.cost = cost
+                        event.image_url = image_url
+                        event.venue = venue
+                        event.latitude = lat
+                        event.longitude = lng
+                        event.url = event_url
+                    end
 
                     # pausa casuale tra 1 e 3 secondi
                     sleep(rand(1..3))
