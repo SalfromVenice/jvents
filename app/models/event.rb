@@ -5,6 +5,7 @@ class Event < ApplicationRecord
     validates :image_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), allow_blank: true }
 
     scope :upcoming, -> { where("start_time >= ?", Time.current).order(:start_time) }
+    scope :expired, ->  { where("end_time < ?", Time.current) }
 
     # formula di Haversine (o una sua variante),
     # calcola la distanza tra due punti sulla superficie della Terra,
@@ -17,6 +18,10 @@ class Event < ApplicationRecord
                 cos(radians(longitude) - radians(?)) +
                 sin(radians(?)) * sin(radians(latitude))
             ) < ?
-        })
+        }, lat, lng, lat, radius_km)
+    end
+
+    def self.delete_expired!
+        expired.delete_all
     end
 end
