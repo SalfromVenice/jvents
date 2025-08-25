@@ -47,3 +47,5 @@ group :development, :test do
 end
 
 gem "nokogiri", "~> 1.18"
+
+gem "dotenv-rails", "~> 3.1"

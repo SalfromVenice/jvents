@@ -8,13 +8,14 @@ namespace :scrape do
         today = Date.today
         from_date = today.strftime("%Y-%m-%d")
         to_date = (today + 7).strftime("%Y-%m-%d")
-        base_url  = "https://en.japantravel.com"
+        base_url  = ENV["BASE_URL"]
         endpoint = "/events?type=event&prefecture=Tokyo&from=#{from_date}&to=#{to_date}&p="
         first_page_html = URI.open("#{base_url}#{endpoint}1")
         first_doc = Nokogiri::HTML(first_page_html)
 
         total_events_found = first_doc.at_css("div.container div.row span.results.left-section-title span")&.text&.to_i
         last_page = (total_events_found / 8.0).ceil
+        events_counter = 0
 
         puts "Totale eventi: #{total_events_found}"
         (1..last_page).each do |page|
@@ -38,7 +39,7 @@ namespace :scrape do
                     address = raw_address&.gsub(/\(\s*\)/, "").strip
                     # sostituisce spazi multipli con uno solo
                     address = address&.gsub(/\s+/, " ")
-                    directions_link = address_div.at_css('a[href*="google.com/maps"]')&.[]('href')
+                    directions_link = address_div.at_css('a[href*="google.com/maps"]')&.[]("href")
 
                     lat_lng = nil
                     if directions_link
@@ -92,6 +93,9 @@ namespace :scrape do
                         event.url = event_url
                     end
 
+                    events_counter += 1
+                    puts "#{events_counter}/#{total_events_found}"
+
                     # pausa casuale tra 1 e 3 secondi
                     sleep(rand(1..3))
                 rescue StandardError => e
@@ -100,4 +104,5 @@ namespace :scrape do
             end
         end
     end
+    puts "Finito!"
 end
